@@ -44,4 +44,32 @@ class UserController extends Controller
         ->with('message', $message= 'Error:El usuario ya existe');
     }
     }
+
+    public function loginUser(Request $request){
+        $username = $request->username;
+        $password = $request->password;
+        $user = User::where('username', $username)->first();
+        if(!empty($user)){
+            if($user->password == $password){
+                $request->session()->put('sessionUserId', $user->id);
+                $request->session()->put('sessionUser', $user->username);
+                $request->session()->put('sessionName', $user->name);
+                $request->session()->put('sessionLastname', $user->lastname);
+                $request->session()->put('sessionRole', $user->role);
+                $request->session()->put('sessionPhoto', $user->photo);
+                return redirect()->route('home');
+            }else{
+                return view('templatesUser.loginUser')->with('message', $message='Error:Contraseña incorrecta');
+            }
+        }else{
+            return view('templatesUser.loginUser')->with('message', $message='Error:Usuario no existe');
+        }
+    }
+
+    public function logoutUser(Request $request){
+        $request->session()->forget('sessionUser');
+        $request->session()->forget('sessionRole');
+        $request->session()->forget('sessionPhoto');
+        return view('templatesUser.loginUser')->with('message', $message='Sesión cerrada');
+    }
 }
