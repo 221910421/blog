@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +15,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('templatesSystem.index');
 });
+
+Route::name('create-user')->get('/create-user', function () {
+    $message = '';
+    return view('templatesUser.createUser')->with('message', $message);
+});
+
+Route::post('save-user', [UserController::class, 'createUser'])->name('save-user');
